@@ -31,7 +31,7 @@ SOFTWARE.
 const { promises: dnsPromises, V4MAPPED, ADDRCONFIG, ALL } = require('node:dns')
 const { promisify } = require('node:util')
 const http = require('node:http')
-const { test } = require('tap')
+const { test } = require('node:test')
 const originalDns = require('node:dns')
 const proxyquire = require('proxyquire')
 const { kDnsCacheSize, kDnsHostnamesToFallback } = require('../lib/core/symbols')
@@ -39,6 +39,7 @@ const osStub = {}
 const dnsStub = {
   ...originalDns
 }
+const { tspl } = require('@matteo.collina/tspl')
 
 const { Resolver: AsyncResolver } = dnsPromises
 
@@ -281,10 +282,12 @@ const verify = (t, entry, value) => {
     }
   }
 
-  t.same(entry, value)
+  t.deepStrictEqual(entry, value)
 }
 
 test('options.family', async (t) => {
+  t = tspl(t, { plan: 6 })
+
   const cacheable = new DNSResolver({ resolver })
 
   // IPv4
@@ -516,7 +519,7 @@ test('custom servers', async (t) => {
   const cacheable = new DNSResolver({ resolver: createResolver() })
 
   // .servers (get)
-  t.same(cacheable.servers, ['127.0.0.1'])
+  t.deepStrictEqual(cacheable.servers, ['127.0.0.1'])
   await t.rejects(cacheable.lookupAsync('unique'), { code: 'ENOTFOUND' })
 
   // .servers (set)
@@ -527,7 +530,7 @@ test('custom servers', async (t) => {
   })
 
   // Verify
-  t.same(cacheable.servers, ['127.0.0.1', '192.168.0.100'])
+  t.deepStrictEqual(cacheable.servers, ['127.0.0.1', '192.168.0.100'])
 })
 
 test('callback style', async (t) => {
@@ -731,7 +734,7 @@ test('fallback works', async (t) => {
 
   await cacheable.lookupAsync('osHostname', { all: true })
 
-  t.same(resolver.counter, {
+  t.deepStrictEqual(resolver.counter, {
     6: 1,
     4: 1,
     lookup: 3
@@ -865,7 +868,7 @@ test('prevents overloading DNS', async (t) => {
 
   await Promise.all([lookupAsync('localhost'), lookupAsync('localhost')])
 
-  t.same(resolver.counter, {
+  t.deepStrictEqual(resolver.counter, {
     4: 1,
     6: 1,
     lookup: 0
@@ -936,7 +939,7 @@ test('slow dns.lookup', async (t) => {
 
   const entry = await cacheable.lookupAsync('osHostname', 4)
 
-  t.same(entry, {
+  t.deepStrictEqual(entry, {
     address: '127.0.0.1',
     family: 4
   })
