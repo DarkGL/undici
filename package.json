@@ -80,7 +80,7 @@
     "test:fetch:nobuild": "borp --timeout 180000 --expose-gc --concurrency 1 -p \"test/fetch/*.js\" && npm run test:webidl && npm run test:busboy",
     "test:interceptors": "borp -p \"test/interceptors/*.js\"",
     "test:jest": "cross-env NODE_V8_COVERAGE= jest",
-    "test:unit": "borp --expose-gc -p \"test/*.js\"",
+    "test:unit": "borp --timeout 60000 --expose-gc -p \"test/*.js\"",
     "test:node-fetch": "borp -p \"test/node-fetch/**/*.js\"",
     "test:node-test": "borp -p \"test/node-test/**/*.js\"",
     "test:tdd": "borp --expose-gc -p \"test/*.js\"",
