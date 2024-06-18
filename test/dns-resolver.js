@@ -686,7 +686,6 @@ test('http example', async (t) => {
     hostname: 'example',
     port: 9999,
     lookup: cacheable.lookup,
-    timeout: 1000,
   }
 
   await t.rejects(makeRequest(options), {
