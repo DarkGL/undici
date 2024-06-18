@@ -282,7 +282,7 @@ const verify = (t, entry, value) => {
     }
   }
 
-  if(!(kExpires in value) && kExpires in entry) {
+  if (!(kExpires in value) && kExpires in entry) {
     value[kExpires] = entry[kExpires]
   }
 
@@ -317,7 +317,7 @@ test('options.all', async (t) => {
   const entries = await cacheable.lookupAsync('localhost', { all: true })
 
   verify(t, entries, [
-    { address: '::ffff:127.0.0.2', family: 6, ttl: 60, },
+    { address: '::ffff:127.0.0.2', family: 6, ttl: 60 },
     { address: '127.0.0.1', family: 4, ttl: 60 }
   ])
 })
@@ -952,10 +952,10 @@ test('throws when no internet connection', async (t) => {
 
   const cacheable = new DNSResolver({ resolver })
   await t.rejects(cacheable.lookupAsync('econnrefused'), (err) => {
-    t.strictEqual(err.name, 'AggregateError');
-    t.strictEqual(err.message, 'All resolvers failed for hostname: econnrefused');
+    t.strictEqual(err.name, 'AggregateError')
+    t.strictEqual(err.message, 'All resolvers failed for hostname: econnrefused')
 
-    return true;
+    return true
   })
 })
 
