@@ -34,14 +34,12 @@ const http = require('node:http')
 const { test } = require('node:test')
 const originalDns = require('node:dns')
 const proxyquire = require('proxyquire')
-const { kDnsCacheSize, kDnsHostnamesToFallback } = require('../lib/core/symbols')
+const { kDnsCacheSize, kDnsHostnamesToFallback, kExpires } = require('../lib/core/symbols')
 const osStub = {}
 const dnsStub = {
   ...originalDns
 }
 const { tspl } = require('@matteo.collina/tspl')
-
-console.log('kExpires', kExpires );
 
 const { Resolver: AsyncResolver } = dnsPromises
 
@@ -284,6 +282,10 @@ const verify = (t, entry, value) => {
     }
   }
 
+  if(!(kExpires in value) && kExpires in entry) {
+    value[kExpires] = entry[kExpires]
+  }
+
   t.deepStrictEqual(entry, value)
 }
 
@@ -308,7 +310,7 @@ test('options.family', async (t) => {
 })
 
 test('options.all', async (t) => {
-  t = tspl(t, { plan: 3 })
+  t = tspl(t, { plan: 5 })
 
   const cacheable = new DNSResolver({ resolver })
 
@@ -367,7 +369,7 @@ test('V4MAPPED hint', async (t) => {
 
 if (process.versions.node.split('.')[0] >= 14) {
   test('ALL hint', async (t) => {
-    t = tspl(t, { plan: 3 })
+    t = tspl(t, { plan: 5 })
 
     const cacheable = new DNSResolver({ resolver })
 
@@ -838,7 +840,7 @@ test('fallback works if ip change', async (t) => {
 })
 
 test('real DNS queries first', async (t) => {
-  t = tspl(t, { plan: 3 })
+  t = tspl(t, { plan: 6 })
 
   const resolver = createResolver({ delay: 0 })
   const cacheable = new DNSResolver({
@@ -950,8 +952,6 @@ test('throws when no internet connection', async (t) => {
 
   const cacheable = new DNSResolver({ resolver })
   await t.rejects(cacheable.lookupAsync('econnrefused'), (err) => {
-    console.log(err.message, err.name);
-
     t.strictEqual(err.name, 'AggregateError');
     t.strictEqual(err.message, 'All resolvers failed for hostname: econnrefused');
 
