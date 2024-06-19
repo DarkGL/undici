@@ -685,7 +685,7 @@ test('http example', async (t) => {
   const options = {
     hostname: 'example',
     port: 9999,
-    lookup: cacheable.lookup,
+    lookup: cacheable.lookup
   }
 
   await t.rejects(makeRequest(options), {
