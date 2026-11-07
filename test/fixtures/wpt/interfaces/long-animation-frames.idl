@@ -13,11 +13,15 @@ interface PerformanceLongAnimationFrameTiming : PerformanceEntry {
 
     readonly attribute DOMHighResTimeStamp renderStart;
     readonly attribute DOMHighResTimeStamp styleAndLayoutStart;
+    readonly attribute DOMHighResTimeStamp styleDuration;
+    readonly attribute DOMHighResTimeStamp layoutDuration;
     readonly attribute DOMHighResTimeStamp blockingDuration;
     readonly attribute DOMHighResTimeStamp firstUIEventTimestamp;
     [SameObject] readonly attribute FrozenArray<PerformanceScriptTiming> scripts;
     [Default] object toJSON();
 };
+
+PerformanceLongAnimationFrameTiming includes PaintTimingMixin;
 
 enum ScriptInvokerType {
     "classic-script",
@@ -46,8 +50,12 @@ interface PerformanceScriptTiming : PerformanceEntry {
     readonly attribute DOMString sourceURL;
     readonly attribute DOMString sourceFunctionName;
     readonly attribute long long sourceCharPosition;
+    readonly attribute long long sourceLine;
+    readonly attribute long long sourceColumn;
     readonly attribute DOMHighResTimeStamp pauseDuration;
     readonly attribute DOMHighResTimeStamp forcedStyleAndLayoutDuration;
+    readonly attribute DOMHighResTimeStamp forcedStyleDuration;
+    readonly attribute DOMHighResTimeStamp forcedLayoutDuration;
     readonly attribute Window? window;
     readonly attribute ScriptWindowAttribution windowAttribution;
     [Default] object toJSON();
